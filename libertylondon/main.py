@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 
 
-BASE_URL = "https://www.libertylondon.com/uk/department/beauty/skin-care/"
+BASE_URL = "https://www.libertylondon.com/uk/department/beauty/hair/"
 headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
     "Accept": "application/json, text/plain, */*",
@@ -20,7 +20,7 @@ headers = {
 }
 
 
-majorcategory = 'Skincare'
+majorcategory = 'Hair'
 
 fields  = [ "Major Category", "Specific Category", "Product ID", "SKU ID", "Product Brand", "Product Desc", "Product URL", "Product Image Link", "Product Ingredients", "Rating", "User Reviews" ]
 data_save = []
