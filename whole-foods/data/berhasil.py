@@ -15,10 +15,7 @@ import os
 # =========================
 PROXY_LIST = [
     # US Proxies (Daftar Awal)
-    {"host": "191.96.254.80", "port": "6127", "user": "arssrhsq", "pass": "x1vpi09f4v1g"},
-    {"host": "92.113.1.148", "port": "5848", "user": "arssrhsq", "pass": "x1vpi09f4v1g"},
-    {"host": "191.96.202.229", "port": "6275", "user": "arssrhsq", "pass": "x1vpi09f4v1g"},
-    {"host": "89.249.195.211", "port": "6966", "user": "arssrhsq", "pass": "x1vpi09f4v1g"},
+    {"host": "", "port": "", "user": "", "pass": ""}
     
     # Canada Proxies (Tambahan Baru)
 ]

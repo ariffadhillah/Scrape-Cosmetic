@@ -26,34 +26,7 @@ from urllib.parse import urlparse, quote_plus
 
 # ------------------------- CONFIG -------------------------
 PROXIES_LIST = [
-    "191.96.254.80:6127:arssrhsq:x1vpi09f4v1g",
-    "45.61.122.149:6441:arssrhsq:x1vpi09f4v1g",
-    "45.61.124.153:6482:arssrhsq:x1vpi09f4v1g",
-    "64.64.110.63:6586:arssrhsq:x1vpi09f4v1g",
-    "145.223.58.21:6290:arssrhsq:x1vpi09f4v1g",
-    "82.23.206.96:5902:arssrhsq:x1vpi09f4v1g",
-    "38.154.233.46:5456:arssrhsq:x1vpi09f4v1g",
-    "45.61.118.128:5825:arssrhsq:x1vpi09f4v1g",
-    "191.96.202.229:6275:arssrhsq:x1vpi09f4v1g",
-    "23.27.196.145:6514:arssrhsq:x1vpi09f4v1g",
-    "154.6.126.37:6008:arssrhsq:x1vpi09f4v1g",
-    "89.249.195.211:6966:arssrhsq:x1vpi09f4v1g",
-    "147.124.198.69:5928:arssrhsq:x1vpi09f4v1g",
-    "82.24.238.65:6872:arssrhsq:x1vpi09f4v1g",
-    "38.154.217.34:7225:arssrhsq:x1vpi09f4v1g",
-    "174.140.200.142:6422:arssrhsq:x1vpi09f4v1g",
-    "46.202.224.238:5790:arssrhsq:x1vpi09f4v1g",
-    "31.57.87.145:5830:arssrhsq:x1vpi09f4v1g",
-    "38.154.233.181:5591:arssrhsq:x1vpi09f4v1g",
-    "198.46.241.143:6678:arssrhsq:x1vpi09f4v1g",
-    "23.27.203.134:6869:arssrhsq:x1vpi09f4v1g",
-    "104.168.118.219:6175:arssrhsq:x1vpi09f4v1g",
-    "152.232.14.43:7174:arssrhsq:x1vpi09f4v1g",
-    "82.26.238.68:6375:arssrhsq:x1vpi09f4v1g",
-    "89.249.194.231:6630:arssrhsq:x1vpi09f4v1g",
-    "104.232.211.0:5613:arssrhsq:x1vpi09f4v1g",
-    "38.154.217.123:7314:arssrhsq:x1vpi09f4v1g",
-    "67.227.14.204:6796:arssrhsq:x1vpi09f4v1g",
+
 ]
 
 HEADERS = {
