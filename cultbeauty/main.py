@@ -6,7 +6,7 @@ import time
 import csv
 
 BASE_URL = "https://www.cultbeauty.co.uk"
-CATEGORY_URL = BASE_URL + "/c/make-up/"
+CATEGORY_URL = BASE_URL + "/c/hair-care/"
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
     "Accept": "application/json, text/plain, */*",
@@ -16,7 +16,7 @@ HEADERS = {
     "Connection": "keep-alive"
 }
 
-majorcategory = 'Make Up'
+majorcategory = 'Hair'
 
 fields  = [ "Major Category", "Specific Category", "Product ID", "SKU ID", "Product Brand", "Product Desc", "Product URL", "Product Image Link", "Product Ingredients", "Rating", "User Reviews" ]
 data_save = []
@@ -33,7 +33,7 @@ def format_rating(rating):
     try:
         return f"{round(float(rating), 1)}"
     except Exception:
-        return None
+        return ''
 
 
 def format_review_count(count):
@@ -42,7 +42,7 @@ def format_review_count(count):
         count = int(count)
         return f"{round(count / 1000, 1)} K" if count >= 1000 else str(count)
     except Exception:
-        return None
+        return ''
 
 
 def get_soup(url):
@@ -64,8 +64,51 @@ def proses_menu_url(soup):
         print("❌ Menu utama tidak ditemukan")
         return []
 
+
+
+
+    # li_items = full_menu[1].find_all("div", class_="carousel-item")
+    # if len(li_items) >= 6:
+    #     for skincare_li in li_items[1:]:
+            
+    #         menu_title = skincare_li.find("a", class_="w-48 brand-logo-carousel-item")
+    #         if menu_title:
+    #             url_li_items = BASE_URL + menu_title["href"]
+
+    #             # ambil kategori dari URL
+    #             category_slug = url_li_items.rstrip("/").split("/")[-1]
+    #             category_name = category_slug.replace("-", " ").title()
+
+    #             print(f"\n=== Category: {category_name} ===")
+    #             print(f"URL: {url_li_items}")
+
+    #             # kirim ke get_products dengan category_name
+    #             get_products(url_li_items, category_name)
+
+
+    # li_items = full_menu[1].find_all("div", class_="carousel-item")
+    # if len(li_items) >= 6:
+    #     # ambil elemen terakhir
+    #     skincare_li = li_items[-1]
+
+    #     menu_title = skincare_li.find("a", class_="w-48 brand-logo-carousel-item")
+    #     if menu_title:
+    #         url_li_items = BASE_URL + menu_title["href"]
+
+    #         # ambil kategori dari URL
+    #         category_slug = url_li_items.rstrip("/").split("/")[-1]
+    #         category_name = category_slug.replace("-", " ").title()
+
+    #         print(f"\n=== Category: {category_name} ===")
+    #         print(f"URL: {url_li_items}")
+
+    #         # kirim ke get_products dengan category_name
+    #         get_products(url_li_items, category_name)
+
+
     li_items = full_menu[1].find_all("div", class_="carousel-item")
-    if len(li_items) >= 6:
+    if li_items:
+        # for skincare_li in li_items:
         for skincare_li in li_items[1:]:
             menu_title = skincare_li.find("a", class_="w-48 brand-logo-carousel-item")
             if menu_title:
@@ -263,17 +306,6 @@ def process_product_url(product_url, category_name):
                 product_image = f"https:{product_image_raw}" if str(product_image_raw).startswith("//") else product_image_raw
 
                 # --- Print hasil ---
-
-                # print("📂 Category:", category_name)
-                # print("🆔 Url Product:", url_product_items)
-                # print("📂 Product Id:", product_id)
-                # print("🆔 SKU:", sku_id)
-                # print("🆔 Brand:", brand_name)
-                # print("📦 Desc:", product_desc)
-                # print("🖼️ Image:", product_image)
-                # print("⭐ Rating:", rating_value)
-                # print("📝 Reviews:", review_count_value)
-                # print("-" * 60)
 
 
                 save_csv = {

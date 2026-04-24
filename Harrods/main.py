@@ -72,22 +72,40 @@
 
 
 
+# import requests
+# import re
+# import json
+# import time
+# import csv
+# import math
+# from bs4 import BeautifulSoup
+
+
+# BASE_URL = "https://www.harrods.com/en-us/make-up"
+# headers = {
+#     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
+#     "Accept": "application/json, text/plain, */*",
+#     "Accept-Language": "en-US,en;q=0.9",
+#     "Referer": BASE_URL,
+#     "Origin": BASE_URL,
+#     "Connection": "keep-alive"
+# }
+
 import requests
-import re
 import json
 import time
-import csv
-import math
+from urllib.parse import urljoin
 from bs4 import BeautifulSoup
+import math
 
-
-BASE_URL = "https://www.harrods.com/en-us/make-up"
-headers = {
+BASE_DOMAIN = "https://www.harrods.com"
+BASE_URL = urljoin(BASE_DOMAIN, "/en-us/make-up")
+HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36",
     "Accept": "application/json, text/plain, */*",
     "Accept-Language": "en-US,en;q=0.9",
     "Referer": BASE_URL,
-    "Origin": BASE_URL,
+    "Origin": BASE_DOMAIN,
     "Connection": "keep-alive"
 }
 
@@ -118,7 +136,7 @@ headers = {
 
 def get_soup(url):
     try:
-        response = requests.get(url, headers=headers, timeout=10)
+        response = requests.get(url, headers=HEADERS, timeout=10)
         response.raise_for_status()
         return BeautifulSoup(response.text, "html.parser")
     except requests.RequestException as e:
@@ -187,6 +205,47 @@ def proses_kategory(url_menu):
             print(f"name kategori items = {name_kategori}")
             print(f"jumlah items = {jumlah_items}")
             print(f"url = {sub_url}\n")
+            extract_product_urls_from_soup(sub_url, name_kategori)
+
+
+
+# ====== helper: ekstrak semua product URLs dari halaman kategori ======
+def extract_product_urls_from_soup(soup):
+    urls = []
+    if not soup:
+        return urls
+
+    # 1) Cari article yang merupakan product card (robust terhadap beberapa atribut)
+    articles = soup.find_all("article")
+    for art in articles:
+        # cek atribut khas product card
+        if ("data-test-id" in art.attrs and "product" in art.attrs.get("data-test-id", "")) or \
+           ("data-product-card-id" in art.attrs) or \
+           ("data-test-id" in art.attrs and art.attrs.get("data-test-id") == "product-item"):
+            a = art.find("a", href=True)
+            if a:
+                href = a["href"].strip()
+                if "/p/" in href:  # memastikan link produk
+                    full = urljoin(BASE_DOMAIN, href)
+                    urls.append(full)
+
+    # 2) Jika belum dapat, fallback: cari semua <a> yang mengandung /en-us/p/
+    if not urls:
+        for a in soup.find_all("a", href=True):
+            href = a["href"].strip()
+            if "/en-us/p/" in href or "/p/" in href:
+                full = urljoin(BASE_DOMAIN, href)
+                urls.append(full)
+
+    # dedup while preserving order
+    seen = set()
+    ordered = []
+    for u in urls:
+        if u not in seen:
+            seen.add(u)
+            ordered.append(u)
+    return ordered
+
 
 
 def main():
