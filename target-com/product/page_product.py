@@ -9,10 +9,7 @@ import html
 
 # ---------- KONFIG ----------
 PROXIES = [
-    {"server": "http://89.249.194.231:6630", "username": "arssrhsq", "password": "x1vpi09f4v1g"}
-#     {"server": "http://191.96.202.229:6275", "username": "arssrhsq", "password": "x1vpi09f4v1g"},
-#     {"server": "http://89.249.195.211:6966", "username": "arssrhsq", "password": "x1vpi09f4v1g"},
-#     {"server": "http://89.249.194.231:6630", "username": "arssrhsq", "password": "x1vpi09f4v1g"}
+    {""}
 ]
 
 HEADERS = {
