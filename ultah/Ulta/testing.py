@@ -32,7 +32,7 @@ query Page($url: JSON, $moduleParams: JSON) {
 
 # Header kolom yang akan digunakan di file CSV
 CSV_HEADERS = [
-    "retailer", "product_group_id", "brand", "product_name","variant", "shade_description", "size", "product_url", "skuId", "category", "ingredients_raw" ,"image_url" ,"description", "details", "how_to_usage", "price","rating", "review_count", "scraped_at"
+    "retailer", "product_group_id", "brand", "product_name","variant", "shade_description", "size", "product_url", "skuId", "category", "ingredients_raw" ,"image_url" ,"description", "details", "how_to_usage", "price","sale_price", "rating", "review_count", "scraped_at"
 ]
 
 
@@ -464,7 +464,7 @@ def scrape_ulta_product(product_url):
             "retailer": "Ulta",
             "product_name": product_name,
             "price": sku_list_price,
-
+            "sale_price": sku_list_price,
             "description": summary if isinstance(summary, str) else None,
 
             # PENTING:
