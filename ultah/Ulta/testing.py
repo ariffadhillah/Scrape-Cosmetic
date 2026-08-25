@@ -220,6 +220,61 @@ def find_first_message_in_modules(data):
 
     return search_modules(data)
 
+
+def extract_details_for_sku(data, sku_id):
+    """
+    Mengambil isi Details yang benar-benar milik SKU tertentu.
+
+    Target:
+        #### Benefits
+        ...
+        #### Features
+        ...
+        Item 2503388
+
+    Hanya mengembalikan block yang mengandung
+    Item <sku_id>.
+    """
+
+    sku_id = str(sku_id)
+
+    candidates = []
+
+    def search(obj):
+        if isinstance(obj, dict):
+
+            # Cari semua string dalam object
+            for key, value in obj.items():
+
+                if isinstance(value, str):
+                    text = value.strip()
+
+                    if (
+                        f"Item {sku_id}" in text
+                        or f"Item {sku_id}<" in text
+                        or f"Item {sku_id} " in text
+                    ):
+                        candidates.append(text)
+
+                elif isinstance(value, (dict, list)):
+                    search(value)
+
+        elif isinstance(obj, list):
+            for item in obj:
+                search(item)
+
+    search(data)
+
+    if not candidates:
+        return None
+
+    # Pilih candidate yang paling panjang.
+    # Biasanya ini adalah full Details block.
+    details = max(candidates, key=len)
+
+    return details.strip()
+
+
 def scrape_ulta_product(product_url):
     # Fetch MAIN JSON (global)
     main_data = fetch_graphql(product_url)
@@ -329,11 +384,37 @@ def scrape_ulta_product(product_url):
         # ===========================
         # Fetch SKU JSON (per-variant)
         # ===========================
-        sku_json = fetch_graphql(f"{product_base_url}?sku={sku}")
+        # sku_json = fetch_graphql(f"{product_base_url}?sku={sku}")
         
+        
+        # if not sku_json:
+        #      time.sleep(0.4)
+        #      continue
+
+
+        # ===========================
+        # Fetch SKU JSON
+        # ===========================
+        sku_json = fetch_graphql(f"{product_base_url}?sku={sku}")
+
         if not sku_json:
-             time.sleep(0.4)
-             continue
+            time.sleep(0.4)
+            continue
+
+
+        # ===========================
+        # Extract SKU Details
+        # ===========================
+        sku_details = extract_details_for_sku(
+            sku_json,
+            sku
+        )
+
+        print(f"\nSKU: {sku}")
+        print(f"Details ditemukan: {bool(sku_details)}")
+
+        if sku_details:
+            print(f"Details Item: Item {sku}")
 
         # ============= Extract price, description, usage, ingredients from SKU JSON =============
         sku_list_price = None
@@ -383,8 +464,12 @@ def scrape_ulta_product(product_url):
             "retailer": "Ulta",
             "product_name": product_name,
             "price": sku_list_price,
+
             "description": summary if isinstance(summary, str) else None,
-            "details": global_description,
+
+            # PENTING:
+            "details": sku_details,
+
             "how_to_usage": sku_usage,
             "ingredients_raw": sku_ingredients,
             "brand": brand_name,
@@ -450,7 +535,7 @@ if __name__ == "__main__":
     print(f"========================================================")
 
 
-# # ======================================================================
+# # # ======================================================================
 # # # Untuk menguji satu produk saja (Hapus tanda pagar untuk mengaktifkan)
 # # # ======================================================================
 # if __name__ == "__main__":

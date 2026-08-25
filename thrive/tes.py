@@ -96,8 +96,8 @@ from webdriver_manager.chrome import ChromeDriverManager
 import time
 
 # Konfigurasi Proxy Anda
-proxy_host = "191.96.254.80"
-proxy_port = "6127"
+proxy_host = "23.95.150.145"
+proxy_port = "6114"
 proxy_user = "arssrhsq"
 proxy_pass = "x1vpi09f4v1g"
 
@@ -122,7 +122,7 @@ try:
     )
 
     print("Membuka halaman Thrive Market...")
-    url = "https://thrivemarket.com/p/badger-kids-sunscreen-cream-spf-40"
+    url = "https://www.nofrills.ca/"
     driver.get(url)
 
     # Tunggu popup muncul (biasanya 5-8 detik)

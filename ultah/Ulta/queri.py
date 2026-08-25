@@ -1,7 +1,7 @@
 # queri.py
 def cari():
     # return 'body-care/all' # masih perlu ambil data skin care 
-    return 'body-care/suncare/sunscreen' # Pastikan menggunakan return 
+    return 'skin-care/cleansers/face-wash' # Pastikan menggunakan return 
 
     # ganti dengan pencarian baru ini
 
