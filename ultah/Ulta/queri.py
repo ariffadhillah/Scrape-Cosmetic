@@ -1,10 +1,21 @@
 # queri.py
 def cari():
     # return 'makeup/face' # Pastikan menggunakan return 
-    return 'makeup/lips'  
+    # return 'makeup/lips'  
     # return 'makeup/eyes'  
     # return 'makeup/nails'  
     # return 'makeup/body-makeup'  
+    # return 'skin-care/cleansers/cleansing-balms-oils'
+    # return 'skin-care/cleansers/face-wipes'
+    # return 'skin-care/cleansers/cleansing-exfoliators'
+    # return 'skin-care/cleansers/toner'
+    # return 'skin-care/cleansers/makeup-remover'
+    # return 'skin-care/treatment-serums/face-serums'
+    # return 'skin-care/treatment-serums/face-peels-exfoliators'
+    # return 'skin-care/treatment-serums/face-masks'
+    return 'skin-care/treatment-serums/sheet-masks'
+    # return 'skin-care/treatment-serums/acne-blemish-treatments'
+    # return 'skin-care/treatment-serums/body-treatments'
     
 
 

@@ -4,16 +4,16 @@ import time
 from bs4 import BeautifulSoup
 import json
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
-
+from datetime import datetime, timezone
 
 # ==========================================================
 # CONFIG
 # ==========================================================
 
-slug = "face-makeup"
+# slug = "face-makeup"
 # slug = "eye-makeup"
 # slug = "lips-makeup"
-# slug = "cheek-makeup"
+slug = "cheek-makeup"
 
 base_url = (
     f"https://www.sephora.com/api/v2/catalog/categories/{slug}/seo"
@@ -36,7 +36,6 @@ headers = {
     "User-Agent": "Mozilla/5.0",
     "Referer": "https://www.sephora.com/",
 }
-
 
 # ==========================================================
 # CATEGORY
@@ -966,27 +965,31 @@ while True:
                         # PRINT
                         # ==================================================
 
-                        print(
-                            f"🆔 Product ID: "
-                            f"{product_id}"
-                        )
+                        # print(
+                        #     f"🆔 Product ID: "
+                        #     f"{product_id}"
+                        # )
 
 
-                        print(
-                            f"🆔 SKU ID: "
-                            f"{sku_id_product}"
-                        )
+                        # print(
+                        #     f"🆔 SKU ID: "
+                        #     f"{sku_id_product}"
+                        # )
 
 
-                        print(
-                            f"⭐ Rating: "
-                            f"{format_rating(rating)}"
-                        )
+                        # print(
+                        #     f"⭐ Rating: "
+                        #     f"{format_rating(rating)}"
+                        # )
 
 
                         print(
                             f"📝 Review Count: "
                             f"{format_review_count(review_count)}"
+                        )
+
+                        scraped_at = datetime.now(timezone.utc).strftime(
+                            "%Y-%m-%dT%H:%M:%SZ"
                         )
 
 
@@ -1042,15 +1045,13 @@ while True:
                                 "price":
                                     listPrice,
 
-                                "rating":
-                                    format_rating(
-                                        rating
-                                    ),
+                                "rating":f"'{format_rating(rating)}",
 
                                 "review_count":
                                     format_review_count(
                                         review_count
                                     ),
+                                "scraped_at": scraped_at,
                             }
                         )
 

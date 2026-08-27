@@ -474,7 +474,7 @@ def scrape_ulta_product(product_url):
             "ingredients_raw": sku_ingredients,
             "brand": brand_name,
             "size": size_,
-            "rating": f"'{rating}'" if rating is not None else None,
+            "rating": f"'{rating}" if rating is not None else None,
             "review_count": review_count,
             "category": category,
             "image_url": image_url,
