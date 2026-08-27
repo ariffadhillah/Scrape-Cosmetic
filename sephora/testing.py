@@ -10,13 +10,13 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 
 
-slug = "foundation-makeup"
+slug = "shampoo-sulfate-free-shampoo"
 base_url = f"https://www.sephora.com/api/v2/catalog/categories/{slug}/seo"
 
 params = {
     "targetSearchEngine": "NLP",
     "currentPage": 1,
-    "pageSize": 1,
+    "pageSize": 60,
     "content": "true",
     "includeRegionsMap": "true",
     "pickupRampup": "true",
@@ -30,6 +30,26 @@ headers = {
     "User-Agent": "Mozilla/5.0",
     "Referer": "https://www.sephora.com/",
 }
+
+def get_category_path(category_data):
+    categories = []
+
+    current = category_data
+
+    while current:
+        display_name = current.get("displayName")
+
+        if display_name:
+            categories.append(display_name)
+
+        current = current.get("parentCategory")
+
+    # Karena data dimulai dari kategori paling spesifik,
+    # balik urutannya menjadi parent -> child
+    categories.reverse()
+
+    return " > ".join(categories)
+
 
 def get_top_level_category(category_data):
     while category_data.get("parentCategory"):
@@ -143,30 +163,64 @@ for page in range(1, total_pages + 1):
                             print("❌ Script tag tidak ditemukan untuk SKU URL:", new_sku_url)
                             continue
                         data_json_res = json.loads(script_tag_res.string)
+                        # with open("Shampoo-2.json", "a", encoding="utf-8") as f:
+                        #     json.dump(data_json_res, f, ensure_ascii=False, indent=2)
+                        #     f.write("\n")
+                            # break  # Hanya ambil SKU pertama yang valid untuk setiap produk utama
+                            
                         product_res = data_json_res.get("page", {}).get("product", {})
+                        # print(product_res)
+                        # with open("product_res.json", "a", encoding="utf-8") as f:
+                        #     json.dump(product_res, f, ensure_ascii=False, indent=2)
+                        #     f.write("\n")
+                        #     break  # Hanya ambil SKU pertama yang valid untuk setiap produk utama
 
 
+                        # specific_category = product_res.get("parentCategory", {}).get("displayName")
+                        specific_category = get_category_path(
+                            product_res.get("parentCategory", {})
+                        )
 
-                        specific_category = product_res.get("parentCategory", {}).get("displayName")
                         product_id = product_res.get("productDetails", {}).get("productId")
-                        sku_id = product_res.get("currentSku", {}).get("skuId")
+                        sku_id_product = product_res.get("currentSku", {}).get("skuId")
                         product_brand = product_res.get("currentSku", {}).get("brandName")
                         product_desc = product_res.get("productDetails", {}).get("displayName")
-                        product_image = f"https://www.sephora.com/productimages/sku/s{sku_id}-main-zoom.jpg?imwidth=1224"
+                        product_image = f"https://www.sephora.com/productimages/sku/s{sku_id_product}-main-zoom.jpg?imwidth=1224"
+
+                        # # Ingredients cleanup
+                        # raw_ingredients = product_res.get("currentSku", {}).get("ingredientDesc")
+                        # if raw_ingredients:
+                        #     ing_soup = BeautifulSoup(raw_ingredients, "html.parser")
+                        #     for tag in ing_soup.find_all(["p", "br", "strong", "u"]):
+                        #         tag.insert_after("\n")
+                        #     clean_ingredients = "\n".join(
+                        #         [line.strip() for line in ing_soup.get_text(separator="", strip=True).splitlines() if line.strip()]
+                        #     )
+                        # else:
+                        #     clean_ingredients = None
+
+
 
                         # Ingredients cleanup
-                        raw_ingredients = product_res.get("currentSku", {}).get("ingredientDesc")
-                        if raw_ingredients:
-                            ing_soup = BeautifulSoup(raw_ingredients, "html.parser")
-                            for tag in ing_soup.find_all(["p", "br", "strong", "u"]):
-                                tag.insert_after("\n")
-                            clean_ingredients = "\n".join(
-                                [line.strip() for line in ing_soup.get_text(separator="", strip=True).splitlines() if line.strip()]
-                            )
-                        else:
-                            clean_ingredients = None
+                        listPrice = product_res.get("currentSku", {}).get("listPrice")
+                        print("💰 Price:", listPrice)
+                        
+                        productName = product_res.get("currentSku", {}).get("productName")
+                        print("�️ Product Name:", productName)
 
-                        # Ingredients cleanup
+                        size_ = product_res.get("currentSku", {}).get("size")
+                        print("�️ Product Size:", size_)
+
+                        variationType = product_res.get("currentSku", {}).get("variationType")
+                        print("�️ Product variationType:", variationType)
+                        
+                        variationValue = product_res.get("currentSku", {}).get("variationValue")
+                        print("�️ Product variationValue:", variationValue)
+
+                        variationDesc = product_res.get("currentSku", {}).get("variationDesc")
+                        print("�️ Product variationDesc:", variationDesc)
+
+                        
                         raw_ingredients = product_res.get("currentSku", {}).get("ingredientDesc")
                         if raw_ingredients:
                             ing_soup = BeautifulSoup(raw_ingredients, "html.parser")
@@ -184,6 +238,8 @@ for page in range(1, total_pages + 1):
                             )
                         else:
                             clean_ingredients = None
+
+                        
 
 
                         # Rating & review
@@ -206,26 +262,37 @@ for page in range(1, total_pages + 1):
 
                         # Tambahkan ke list
                         all_data.append({
-                            "Major Category": "major_category",
-                            "Specific Category": specific_category,
-                            "Product ID": product_id,
-                            "SKU ID": sku_id,
-                            "Product Brand": product_brand,
-                            "Product Desc": product_desc,
-                            "Product URL": detail_url,
-                            "Product Image Link": product_image,
-                            "Product Ingridents": clean_ingredients,
-                            # "Rating": rating,
-                            # "Review Count": review_count,
-                            "Rating": format_rating(rating),
-                            "User Reviews": format_review_count(review_count),
+                            "retailer": "Sephora",
+                            "product_group_id": product_id,
+                            "brand": product_brand,
+                            "product_name": productName,
+                            "variant":variationValue,
+                            "variant_type":variationType,
+                            "shade_description":variationDesc,
+                            "size":size_,
+                            "product_url": new_sku_url,
+                            "skuId": sku_id_product,
+                            "category": specific_category,
+                            "ingredients_raw": clean_ingredients,
+                            "image_url": product_image,
+                            "description":"",
+                            "how_to_usage":"",
+                            "price": listPrice,
+                            "rating": format_rating(rating),
+                            "review_count": format_review_count(review_count),
+
                         })
+                        # print(all_data)
                     except Exception as e:
                         print(f"❌ Gagal memproses SKU URL {new_sku_url}: {e}")
+
                     
 
         except Exception as e:
-            print(f"❌ Error saat memproses {detail_url}: {e}")
+            print(f"❌ Error saat memproses {new_sku_url}: {e}")
+            # break  # Hanya ambil SKU pertama yang valid untuk setiap produk utama
+
+            # break  # Hanya ambil SKU pertama yang valid untuk setiap produk utama
 
 
 
@@ -237,11 +304,11 @@ for page in range(1, total_pages + 1):
             print(f"❌ Gagal mengambil detail produk: {e}")
             continue
 
-    # Simpan ke CSV
-filename = f"{slug}_products.csv"
-with open(filename, "w", newline="", encoding="utf-8") as f:
-    writer = csv.DictWriter(f, fieldnames=all_data[0].keys())
-    writer.writeheader()
-    writer.writerows(all_data)
+#     # Simpan ke CSV
+# filename = f"{slug}_products.csv"
+# with open(filename, "w", newline="", encoding="utf-8") as f:
+#     writer = csv.DictWriter(f, fieldnames=all_data[0].keys())
+#     writer.writeheader()
+#     writer.writerows(all_data)
 
-print(f"\n✅ Data berhasil disimpan ke: {filename}")
+# print(f"\n✅ Data berhasil disimpan ke: {filename}")
